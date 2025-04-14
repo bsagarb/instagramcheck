@@ -10,11 +10,23 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get('/',async(req,res)=>{
+    res.send("backend running")
+})
 app.post('/api/check-instagram', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+    const browser = await puppeteer.launch({ headless: true, args: [ '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-zygote',
+        '--single-process',
+        '--no-first-run',
+        '--disable-gpu',
+
+    ] });
     const page = await browser.newPage();
 
     await page.goto('https://www.instagram.com/accounts/login/', {
