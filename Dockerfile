@@ -1,8 +1,14 @@
-# Use official Puppeteer image that has Chromium & dependencies
+# Use official Puppeteer image with Chromium & dependencies
 FROM ghcr.io/puppeteer/puppeteer:latest
  
 # Set working directory
 WORKDIR /app
+ 
+# Change ownership so current user (pptruser) can write
+RUN chown -R pptruser:pptruser /app
+ 
+# Switch to non-root user
+USER pptruser
  
 # Copy dependency files and install
 COPY package*.json ./
