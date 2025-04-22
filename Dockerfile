@@ -1,21 +1,23 @@
-# Use official Puppeteer image with Chromium & dependencies
+# Use official Puppeteer base image with Chromium & deps
 FROM ghcr.io/puppeteer/puppeteer:latest
  
+# Create app directory and set ownership for non-root user
+RUN mkdir -p /home/pptruser/app && chown -R pptruser:pptruser /home/pptruser/app
+ 
 # Set working directory
-WORKDIR /app
+WORKDIR /home/pptruser/app
  
-# Change ownership so current user (pptruser) can write
-RUN chown -R pptruser:pptruser /app
- 
-# Switch to non-root user
+# Switch to Puppeteer user (non-root)
 USER pptruser
  
-# Copy dependency files and install
-COPY package*.json ./
+# Copy dependency files
+COPY --chown=pptruser:pptruser package*.json ./
+ 
+# Install dependencies
 RUN npm install
  
-# Copy all files
-COPY . .
+# Copy all source code
+COPY --chown=pptruser:pptruser . .
  
 # Expose the port your app runs on
 EXPOSE 3000
